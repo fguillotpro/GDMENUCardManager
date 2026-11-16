@@ -147,6 +147,21 @@
   <data name="AddGame" xml:space="preserve">
     <value>添加游戏</value>
   </data>
+  <data name="AddGamesFromFolder" xml:space="preserve">
+    <value>添加文件夹及其子文件夹中的所有游戏</value>
+  </data>
+  <data name="AlreadyInList" xml:space="preserve">
+    <value>产品 {0} 已在列表中</value>
+  </data>
+  <data name="DuplicatesSkipped" xml:space="preserve">
+    <value>已跳过重复的游戏</value>
+  </data>
+  <data name="NoGamesFound" xml:space="preserve">
+    <value>未找到游戏</value>
+  </data>
+  <data name="NoGamesFoundMessage" xml:space="preserve">
+    <value>在此文件夹或其子文件夹中未找到可导入的游戏。</value>
+  </data>
   <data name="RemoveSelectedGames" xml:space="preserve">
     <value>移除所选游戏</value>
   </data>

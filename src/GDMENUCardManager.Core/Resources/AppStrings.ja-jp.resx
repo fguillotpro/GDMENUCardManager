@@ -147,6 +147,21 @@
   <data name="AddGame" xml:space="preserve">
     <value>ゲームを追加</value>
   </data>
+  <data name="AddGamesFromFolder" xml:space="preserve">
+    <value>フォルダとその下層フォルダ内のすべてのゲームを追加</value>
+  </data>
+  <data name="AlreadyInList" xml:space="preserve">
+    <value>製品 {0} は既にリストに含まれています</value>
+  </data>
+  <data name="DuplicatesSkipped" xml:space="preserve">
+    <value>重複したゲームをスキップしました</value>
+  </data>
+  <data name="NoGamesFound" xml:space="preserve">
+    <value>ゲームが見つかりません</value>
+  </data>
+  <data name="NoGamesFoundMessage" xml:space="preserve">
+    <value>このフォルダとその下層フォルダにインポートできるゲームが見つかりませんでした。</value>
+  </data>
   <data name="RemoveSelectedGames" xml:space="preserve">
     <value>選択したゲームを削除</value>
   </data>

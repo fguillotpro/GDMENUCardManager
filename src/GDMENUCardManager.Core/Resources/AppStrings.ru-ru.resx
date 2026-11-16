@@ -147,6 +147,21 @@
   <data name="AddGame" xml:space="preserve">
     <value>Добавить игру(ы)</value>
   </data>
+  <data name="AddGamesFromFolder" xml:space="preserve">
+    <value>Добавить все игры из папки и вложенных папок</value>
+  </data>
+  <data name="AlreadyInList" xml:space="preserve">
+    <value>продукт {0} уже есть в списке</value>
+  </data>
+  <data name="DuplicatesSkipped" xml:space="preserve">
+    <value>Дубликаты пропущены</value>
+  </data>
+  <data name="NoGamesFound" xml:space="preserve">
+    <value>Игры не найдены</value>
+  </data>
+  <data name="NoGamesFoundMessage" xml:space="preserve">
+    <value>В этой папке и во вложенных папках не найдено ни одной игры, пригодной для импорта.</value>
+  </data>
   <data name="RemoveSelectedGames" xml:space="preserve">
     <value>Удалить выбранную(ые) игру(ы)</value>
   </data>

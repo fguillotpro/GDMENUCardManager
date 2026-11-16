@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -46,10 +45,12 @@ namespace GDMENUCardManager
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
         }
 
-        public static async Task Drop(IDropInfo dropInfo)
+        /// <summary>
+        /// Dropped files go through <see cref="Manager.AddGames"/>, so they get the same
+        /// invalid file and duplicate report as the add buttons. Row moves report nothing.
+        /// </summary>
+        public static async Task<(List<string> Invalid, List<string> SkippedDuplicates)> Drop(IDropInfo dropInfo, Manager manager)
         {
-            var invalid = new List<string>();
-
             var insertIndex = dropInfo.UnfilteredInsertIndex;
             var destinationList = dropInfo.TargetCollection.TryGetList();
 
@@ -59,35 +60,8 @@ namespace GDMENUCardManager
 
             if (dropInfo.DragInfo == null)
             {
-                if (!(dropInfo.Data is DataObject data) || !data.ContainsFileDropList())
-                    return;
-
-                var droppedFiles = data.GetFileDropList().Cast<string>().ToList();
-                // Files referenced by an index file in this same drop ride along with it.
-                var companions = await ImageHelper.GetCompanionFilePathsAsync(droppedFiles);
-
-                foreach (var o in droppedFiles)
-                {
-                    try
-                    {
-                        if (menuAtTop && IsMenu(o))
-                            continue;
-
-                        if (companions.Contains(o))
-                            continue;
-
-                        var toInsert = await ImageHelper.CreateGdItemAsync(o);
-                        destinationList.Insert(insertIndex++, toInsert);
-                    }
-                    catch (UnsupportedDiscFormatException ex)
-                    {
-                        invalid.Add($"{o} - {ex.Message}");
-                    }
-                    catch
-                    {
-                        invalid.Add(o);
-                    }
-                }
+                if (dropInfo.Data is DataObject data && data.ContainsFileDropList())
+                    return await manager.AddGames(data.GetFileDropList().Cast<string>().ToList(), insertIndex);
             }
             else
             {
@@ -115,16 +89,7 @@ namespace GDMENUCardManager
                     foreach (var o in data)
                         destinationList.Insert(insertIndex++, o);
             }
-
-            if (invalid.Any())
-                throw new InvalidDropException(string.Join(Environment.NewLine, invalid));
-        }
-    }
-
-    internal class InvalidDropException : Exception
-    {
-        public InvalidDropException(string message) : base(message)
-        {
+            return (new List<string>(), new List<string>());
         }
     }
 }

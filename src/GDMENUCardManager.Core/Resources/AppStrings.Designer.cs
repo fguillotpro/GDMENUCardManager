@@ -79,6 +79,24 @@ namespace GDMENUCardManager.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add all games from a folder and its subfolders.
+        /// </summary>
+        public static string AddGamesFromFolder {
+            get {
+                return ResourceManager.GetString("AddGamesFromFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to product {0} is already in the list.
+        /// </summary>
+        public static string AlreadyInList {
+            get {
+                return ResourceManager.GetString("AlreadyInList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [and more {0} folders].
         /// </summary>
         public static string AndMoreFolders {
@@ -399,6 +417,15 @@ namespace GDMENUCardManager.Core.Resources {
         public static string Done {
             get {
                 return ResourceManager.GetString("Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate games skipped.
+        /// </summary>
+        public static string DuplicatesSkipped {
+            get {
+                return ResourceManager.GetString("DuplicatesSkipped", resourceCulture);
             }
         }
         
@@ -867,6 +894,24 @@ namespace GDMENUCardManager.Core.Resources {
         public static string NoDataTrackFound {
             get {
                 return ResourceManager.GetString("NoDataTrackFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No games found.
+        /// </summary>
+        public static string NoGamesFound {
+            get {
+                return ResourceManager.GetString("NoGamesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No importable game was found in this folder or its subfolders.
+        /// </summary>
+        public static string NoGamesFoundMessage {
+            get {
+                return ResourceManager.GetString("NoGamesFoundMessage", resourceCulture);
             }
         }
         

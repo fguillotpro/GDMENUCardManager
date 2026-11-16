@@ -461,39 +461,20 @@ namespace GDMENUCardManager
                 insertIndex = Math.Min(insertIndex, Manager.ItemList.Count);
 
                 IsBusy = true;
-                var invalid = new List<string>();
 
                 try
                 {
                     // Dropped files arrive as storage items, take the real path off each.
                     var droppedItems = e.DataTransfer.TryGetFiles() ?? Array.Empty<IStorageItem>();
-                    // Files referenced by an index file in this same drop ride along with it.
-                    var companions = await ImageHelper.GetCompanionFilePathsAsync(
-                        droppedItems.Select(x => x.TryGetLocalPath()).Where(x => x != null));
+                    var paths = droppedItems.Select(x => x.TryGetLocalPath()).Where(x => x != null).ToList();
 
-                    foreach (var o in droppedItems)
-                    {
-                        var path = o.TryGetLocalPath();
-                        if (path != null && !companions.Contains(path))
-                        {
-                            try
-                            {
-                                Manager.ItemList.Insert(insertIndex, await ImageHelper.CreateGdItemAsync(path));
-                                insertIndex++;
-                            }
-                            catch (UnsupportedDiscFormatException ex)
-                            {
-                                invalid.Add($"{path} - {ex.Message}");
-                            }
-                            catch
-                            {
-                                invalid.Add(path);
-                            }
-                        }
-                    }
+                    // Same path as the add button: invalid files and duplicates are reported.
+                    var report = await Manager.AddGames(paths, insertIndex);
 
-                    if (invalid.Any())
-                        await MessageBoxManager.GetMessageBoxStandard(AppStrings.IgnoredFoldersFiles, string.Join(Environment.NewLine, invalid), icon: MsBox.Avalonia.Enums.Icon.Error).ShowWindowDialogAsync(this);
+                    if (report.Invalid.Any())
+                        await MessageBoxManager.GetMessageBoxStandard(AppStrings.IgnoredFoldersFiles, string.Join(Environment.NewLine, report.Invalid), icon: MsBox.Avalonia.Enums.Icon.Error).ShowWindowDialogAsync(this);
+                    if (report.SkippedDuplicates.Any())
+                        await MessageBoxManager.GetMessageBoxStandard(AppStrings.DuplicatesSkipped, string.Join(Environment.NewLine, report.SkippedDuplicates), icon: MsBox.Avalonia.Enums.Icon.Info).ShowWindowDialogAsync(this);
                 }
                 catch (Exception)
                 {
@@ -1103,10 +1084,12 @@ namespace GDMENUCardManager
             {
                 IsBusy = true;
 
-                var invalid = await Manager.AddGames(files.Select(x => x.TryGetLocalPath()).ToArray());
+                var report = await Manager.AddGames(files.Select(x => x.TryGetLocalPath()).ToArray());
 
-                if (invalid.Any())
-                    await MessageBoxManager.GetMessageBoxStandard(AppStrings.IgnoredFoldersFiles, string.Join(Environment.NewLine, invalid), icon: MsBox.Avalonia.Enums.Icon.Error).ShowAsPopupAsync(this);
+                if (report.Invalid.Any())
+                    await MessageBoxManager.GetMessageBoxStandard(AppStrings.IgnoredFoldersFiles, string.Join(Environment.NewLine, report.Invalid), icon: MsBox.Avalonia.Enums.Icon.Error).ShowAsPopupAsync(this);
+                if (report.SkippedDuplicates.Any())
+                    await MessageBoxManager.GetMessageBoxStandard(AppStrings.DuplicatesSkipped, string.Join(Environment.NewLine, report.SkippedDuplicates), icon: MsBox.Avalonia.Enums.Icon.Info).ShowAsPopupAsync(this);
 
                 IsBusy = false;
             }

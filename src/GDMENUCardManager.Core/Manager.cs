@@ -1570,34 +1570,110 @@ namespace GDMENUCardManager.Core
             item.Length = ByteSizeLib.ByteSize.FromBytes(item.ImageFiles.Sum(x => new FileInfo(Path.Combine(item.FullFolderPath, x)).Length));
         }
 
-        public async Task<List<string>> AddGames(string[] files)
+        /// <summary>
+        /// Recursively finds every file under <paramref name="folder"/> whose extension
+        /// is a supported index format (gdi/cdi/mds/ccd/cue/chd).
+        /// Subfolders that cannot be listed are skipped, hidden and system entries too.
+        /// </summary>
+        public static Task<string[]> FindGameFilesInFolderAsync(string folder)
+        {
+            var options = new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true };
+            return Task.Run(() => Directory.EnumerateFiles(folder, "*", options)
+                .Where(f => supportedImageFormats.Contains(Path.GetExtension(f), StringComparer.OrdinalIgnoreCase))
+                .ToArray());
+        }
+
+        /// <summary>
+        /// Two IP headers describe the same disc when product number, disc number, name and version
+        /// all match. The product number alone is not enough: every disc of a multi-disc game carries
+        /// the same one, and so do some unrelated releases.
+        /// </summary>
+        public static bool IsSameDisc(IpBin a, IpBin b)
+        {
+            if (a == null || b == null || string.IsNullOrWhiteSpace(a.ProductNumber))
+                return false;
+
+            static bool same(string x, string y) => string.Equals(x?.Trim(), y?.Trim(), StringComparison.OrdinalIgnoreCase);
+            return same(a.ProductNumber, b.ProductNumber) && same(a.Disc, b.Disc) && same(a.Name, b.Name) && same(a.Version, b.Version);
+        }
+
+        /// <summary>
+        /// True when <paramref name="candidate"/> is a disc already in the list.
+        /// Card items are lazy loaded, so the IP of those sharing the product number is read first.
+        /// An item whose IP cannot be read is never reported as a duplicate.
+        /// </summary>
+        public async Task<bool> IsDuplicate(GdItem candidate)
+        {
+            if (candidate.Ip == null || string.IsNullOrWhiteSpace(candidate.ProductNumber))
+                return false;
+
+            var sameProduct = ItemList
+                .Where(x => string.Equals(x.ProductNumber?.Trim(), candidate.ProductNumber.Trim(), StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            foreach (var item in sameProduct)
+            {
+                if (item.Ip == null)
+                {
+                    try
+                    {
+                        await LoadIP(item);
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                }
+
+                if (IsSameDisc(item.Ip, candidate.Ip))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Adds the given image files to the list, skipping the discs already in it.
+        /// </summary>
+        /// <param name="insertIndex">Position of the first added item; -1 appends.</param>
+        public async Task<(List<string> Invalid, List<string> SkippedDuplicates)> AddGames(IEnumerable<string> files, int insertIndex = -1)
         {
             var invalid = new List<string>();
+            var skippedDuplicates = new List<string>();
             if (files != null)
             {
                 // Files referenced by an index file in this same selection ride along with it.
                 var companions = await ImageHelper.GetCompanionFilePathsAsync(files);
 
-                foreach (var item in files)
+                foreach (var file in files)
                 {
-                    if (companions.Contains(item))
+                    if (companions.Contains(file))
                         continue;
 
                     try
                     {
-                        ItemList.Add(await ImageHelper.CreateGdItemAsync(item));
+                        var item = await ImageHelper.CreateGdItemAsync(file);
+                        if (await IsDuplicate(item))
+                        {
+                            skippedDuplicates.Add($"{file} - {string.Format(AppStrings.AlreadyInList, item.ProductNumber)}");
+                            continue;
+                        }
+
+                        if (insertIndex < 0)
+                            ItemList.Add(item);
+                        else
+                            ItemList.Insert(Math.Min(insertIndex++, ItemList.Count), item);
                     }
                     catch (UnsupportedDiscFormatException ex)
                     {
-                        invalid.Add($"{item} - {ex.Message}");
+                        invalid.Add($"{file} - {ex.Message}");
                     }
                     catch (Exception)
                     {
-                        invalid.Add(item);
+                        invalid.Add(file);
                     }
                 }
             }
-            return invalid;
+            return (invalid, skippedDuplicates);
         }
 
         public bool SearchInItem(GdItem item, string text)

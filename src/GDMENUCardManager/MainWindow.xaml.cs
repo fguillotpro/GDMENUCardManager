@@ -255,13 +255,7 @@ namespace GDMENUCardManager
             IsBusy = true;
             try
             {
-                await DragDropHandler.Drop(dropInfo);
-            }
-            catch (InvalidDropException ex)
-            {
-                var w = new TextWindow(AppStrings.IgnoredFoldersFiles, ex.Message);
-                w.Owner = this;
-                w.ShowDialog();
+                ShowAddGamesReport(await DragDropHandler.Drop(dropInfo, Manager));
             }
             catch (Exception ex)
             {
@@ -568,15 +562,51 @@ namespace GDMENUCardManager
             if (dialog.ShowDialog(this) == true)
             {
                 IsBusy = true;
+                ShowAddGamesReport(await Manager.AddGames(dialog.FileNames));
+                IsBusy = false;
+            }
+        }
 
-                var invalid = await Manager.AddGames(dialog.FileNames);
+        private void ShowText(string title, string text)
+        {
+            var w = new TextWindow(title, text);
+            w.Owner = this;
+            w.ShowDialog();
+        }
 
-                if (invalid.Any())
-                {
-                    var w = new TextWindow(AppStrings.IgnoredFoldersFiles, string.Join(Environment.NewLine, invalid));
-                    w.Owner = this;
-                    w.ShowDialog();
-                }
+        private void ShowAddGamesReport((List<string> Invalid, List<string> SkippedDuplicates) report)
+        {
+            if (report.Invalid.Any())
+                ShowText(AppStrings.IgnoredFoldersFiles, string.Join(Environment.NewLine, report.Invalid));
+            if (report.SkippedDuplicates.Any())
+                ShowText(AppStrings.DuplicatesSkipped, string.Join(Environment.NewLine, report.SkippedDuplicates));
+        }
+
+        private async void ButtonAddGamesFromFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFolderDialog
+            {
+                AddToRecent = false,
+                Title = AppStrings.AddGamesFromFolder,
+            };
+            if (dialog.ShowDialog(this) != true)
+                return;
+
+            IsBusy = true;
+            try
+            {
+                var files = await Manager.FindGameFilesInFolderAsync(dialog.FolderName);
+                if (files.Length == 0)
+                    ShowText(AppStrings.NoGamesFound, AppStrings.NoGamesFoundMessage);
+                else
+                    ShowAddGamesReport(await Manager.AddGames(files));
+            }
+            catch (Exception ex)
+            {
+                ShowText(AppStrings.Error, ex.Message);
+            }
+            finally
+            {
                 IsBusy = false;
             }
         }

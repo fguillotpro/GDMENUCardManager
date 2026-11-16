@@ -154,6 +154,24 @@
     <value>Add game(s)</value>
     <comment>Add game button tooltip</comment>
   </data>
+  <data name="AddGamesFromFolder" xml:space="preserve">
+    <value>Add all games from a folder and its subfolders</value>
+    <comment>Add games from folder button tooltip and folder dialog title</comment>
+  </data>
+  <data name="AlreadyInList" xml:space="preserve">
+    <value>product {0} is already in the list</value>
+    <comment>0 = product number</comment>
+  </data>
+  <data name="DuplicatesSkipped" xml:space="preserve">
+    <value>Duplicate games skipped</value>
+    <comment>Dialog title for games skipped because the same disc is already in the list</comment>
+  </data>
+  <data name="NoGamesFound" xml:space="preserve">
+    <value>No games found</value>
+  </data>
+  <data name="NoGamesFoundMessage" xml:space="preserve">
+    <value>No importable game was found in this folder or its subfolders.</value>
+  </data>
   <data name="RemoveSelectedGames" xml:space="preserve">
     <value>Remove selected game(s)</value>
     <comment>Add game button tooltip</comment>

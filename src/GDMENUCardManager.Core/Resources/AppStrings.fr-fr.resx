@@ -147,6 +147,21 @@
   <data name="AddGame" xml:space="preserve">
     <value>Ajouter un(des) jeu(x)</value>
   </data>
+  <data name="AddGamesFromFolder" xml:space="preserve">
+    <value>Ajouter tous les jeux d'un dossier et de ses sous-dossiers</value>
+  </data>
+  <data name="AlreadyInList" xml:space="preserve">
+    <value>le produit {0} est déjà dans la liste</value>
+  </data>
+  <data name="DuplicatesSkipped" xml:space="preserve">
+    <value>Jeux en double ignorés</value>
+  </data>
+  <data name="NoGamesFound" xml:space="preserve">
+    <value>Aucun jeu trouvé</value>
+  </data>
+  <data name="NoGamesFoundMessage" xml:space="preserve">
+    <value>Aucun jeu importable n'a été trouvé dans ce dossier ni dans ses sous-dossiers.</value>
+  </data>
   <data name="RemoveSelectedGames" xml:space="preserve">
     <value>Supprimer le(s) jeu(x) sélectionné(s)</value>
   </data>

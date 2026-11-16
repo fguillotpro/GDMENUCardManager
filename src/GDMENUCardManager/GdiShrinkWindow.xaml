@@ -1,6 +1,8 @@
 ﻿<Window x:Class="GDMENUCardManager.GdiShrinkWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Background="{DynamicResource ApplicationBackgroundBrush}"
+        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GDMENUCardManager"
@@ -17,7 +19,7 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DataGrid ItemsSource="{Binding List, Mode=OneTime}" IsReadOnly="False" AutoGenerateColumns="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Margin="8">
+        <DataGrid FontSize="12" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" RowBackground="Transparent" HorizontalGridLinesBrush="{DynamicResource ControlElevationBorderBrush}" VerticalGridLinesBrush="{DynamicResource ControlElevationBorderBrush}" GridLinesVisibility="All" BorderThickness="1" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" ColumnHeaderStyle="{DynamicResource DefaultDataGridColumnHeaderStyle}" ItemsSource="{Binding List, Mode=OneTime}" IsReadOnly="False" AutoGenerateColumns="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Margin="8">
             <DataGrid.Columns>
 
                 <DataGridTemplateColumn Width="Auto" Header="{x:Static coreres:AppStrings.Shrink}">

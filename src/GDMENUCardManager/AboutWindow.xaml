@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:GDMENUCardManager"
         xmlns:coreres="clr-namespace:GDMENUCardManager.Core.Resources;assembly=GDMENUCardManager.Core"
         mc:Ignorable="d"
-        Title="{x:Static coreres:AppStrings.About}" Height="400" Width="700" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        Title="{x:Static coreres:AppStrings.About}" Height="420" Width="700" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Grid>
         <FlowDocumentScrollViewer VerticalScrollBarVisibility="Disabled">
             <FlowDocument>
@@ -76,6 +76,8 @@
                     <Bold>Redump2CDI</Bold> - darc;&#160;
                     <LineBreak/>
                     <Bold>GD MENU Card Manager (ateam version fork)</Bold> - Derek Pascarella;&#160;
+                    <LineBreak/>
+                    <Bold>Dark mode, folder import</Bold> - McFly;&#160;
                 </Paragraph>
 
             </FlowDocument>
